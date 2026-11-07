@@ -1,0 +1,182 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Inspect latest backend listener",
+			"type": "shell",
+			"command": "Get-NetTCPConnection -LocalPort 5000 -State Listen | Select-Object -ExpandProperty OwningProcess; Get-CimInstance Win32_Process | Where-Object { $_.ProcessId -eq (Get-NetTCPConnection -LocalPort 5000 -State Listen).OwningProcess } | Select-Object -ExpandProperty ParentProcessId",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "BrandGuard Backend",
+			"type": "shell",
+			"command": "C:\\Windows\\System32\\cmd.exe",
+			"args": [
+				"/c",
+				"cd /d C:\\BrandGuardAI\\backend && npm run dev"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "BrandGuard Frontend",
+			"type": "shell",
+			"command": "C:\\Windows\\System32\\cmd.exe",
+			"args": [
+				"/c",
+				"cd /d C:\\BrandGuardAI\\frontend && npm run dev"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "BrandGuard AI Service",
+			"type": "shell",
+			"command": "C:\\Windows\\System32\\cmd.exe",
+			"args": [
+				"/c",
+				"cd /d C:\\BrandGuardAI\\ai-service && .\\.venv\\Scripts\\activate.bat && uvicorn app.main:app --reload --port 8000"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "BrandGuard Smoke Test",
+			"type": "shell",
+			"command": "C:\\Windows\\System32\\cmd.exe",
+			"args": [
+				"/c",
+				"cd /d C:\\BrandGuardAI\\backend && npm run test:smoke"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "BrandGuard Workflow Test",
+			"type": "shell",
+			"command": "C:\\Windows\\System32\\cmd.exe",
+			"args": [
+				"/c",
+				"cd /d C:\\BrandGuardAI\\backend && npm run test:workflow"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "BrandGuard Frontend Build",
+			"type": "shell",
+			"command": "C:\\Windows\\System32\\cmd.exe",
+			"args": [
+				"/c",
+				"cd /d C:\\BrandGuardAI\\frontend && npm run build"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "BrandGuard Backend Smoke Test",
+			"type": "shell",
+			"command": "C:\\Windows\\System32\\cmd.exe",
+			"args": [
+				"/c",
+				"cd /d C:\\BrandGuardAI\\backend && npm run test:smoke"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "BrandGuard Frontend Dev Server",
+			"type": "shell",
+			"command": "C:\\Windows\\System32\\cmd.exe",
+			"args": [
+				"/c",
+				"cd /d C:\\BrandGuardAI\\frontend && npm run dev"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "BrandGuard Backend Server",
+			"type": "shell",
+			"command": "C:\\Windows\\System32\\cmd.exe",
+			"args": [
+				"/c",
+				"cd /d C:\\BrandGuardAI\\backend && npm start"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "BrandGuard UI and backend validation",
+			"type": "shell",
+			"command": "C:\\Windows\\System32\\cmd.exe",
+			"args": [
+				"/c",
+				"cd /d C:\\BrandGuardAI\\frontend && npm run build && cd /d C:\\BrandGuardAI\\backend && npm run test:smoke"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "BrandGuard final UI polish validation",
+			"type": "shell",
+			"command": "C:\\Windows\\System32\\cmd.exe",
+			"args": [
+				"/c",
+				"cd /d C:\\BrandGuardAI\\frontend && npm run build && cd /d C:\\BrandGuardAI\\backend && npm run test:smoke"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "BrandGuard UI Final Build",
+			"type": "shell",
+			"command": "C:\\Windows\\System32\\cmd.exe",
+			"args": [
+				"/c",
+				"cd /d C:\\BrandGuardAI\\frontend && npm run build"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "BrandGuard Password Toggle Build",
+			"type": "shell",
+			"command": "C:\\Windows\\System32\\cmd.exe",
+			"args": [
+				"/c",
+				"cd /d C:\\BrandGuardAI\\frontend && npm run build"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "BrandGuard Monkey Toggle Build",
+			"type": "shell",
+			"command": "C:\\Windows\\System32\\cmd.exe",
+			"args": [
+				"/c",
+				"cd /d C:\\BrandGuardAI\\frontend && npm run build"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		}
+	]
+}
