@@ -1,5 +1,6 @@
 import { Bell, BookOpenCheck, BriefcaseBusiness, Building2, ChartNoAxesCombined, LayoutDashboard, Settings, ShieldCheck, Signature, Users } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 const navItems = [
   { label: 'Dashboard', to: '/', icon: LayoutDashboard },
@@ -15,8 +16,24 @@ const navItems = [
 ];
 
 export default function Layout({ children, user, onLogout }) {
+  const navigate = useNavigate();
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+  const logoutDialogRef = useRef(null);
   const roleLabel = (user?.role || 'User').replace('_', ' ');
   const statusTone = user?.role === 'ADMIN' ? 'Admin view' : user?.role === 'REVIEWER' ? 'Review lane' : 'Creator workspace';
+
+  useEffect(() => {
+    const dialog = logoutDialogRef.current;
+    if (!dialog) return;
+    if (logoutDialogOpen && !dialog.open) dialog.showModal();
+    if (!logoutDialogOpen && dialog.open) dialog.close();
+  }, [logoutDialogOpen]);
+
+  const confirmLogout = () => {
+    onLogout();
+    setLogoutDialogOpen(false);
+    navigate('/login', { replace: true });
+  };
 
   return (
     <div className="shell">
@@ -50,10 +67,29 @@ export default function Layout({ children, user, onLogout }) {
           ))}
         </nav>
 
-        <button className="logout-btn" onClick={onLogout}>Logout</button>
+        <button className="logout-btn btn-wrapper btn" onClick={() => setLogoutDialogOpen(true)}>Logout</button>
       </aside>
 
       <main className="main-panel">{children}</main>
+
+      <dialog
+        ref={logoutDialogRef}
+        className="logout-dialog"
+        aria-labelledby="logout-dialog-title"
+        aria-describedby="logout-dialog-description"
+        onCancel={(event) => {
+          event.preventDefault();
+          setLogoutDialogOpen(false);
+        }}
+        onClose={() => setLogoutDialogOpen(false)}
+      >
+        <h2 id="logout-dialog-title">Log out?</h2>
+        <p id="logout-dialog-description">Are you sure you want to log out?</p>
+        <div className="logout-dialog-actions">
+          <button className="ghost-btn btn-wrapper btn" onClick={() => setLogoutDialogOpen(false)}>Cancel</button>
+          <button className="logout-btn btn-wrapper btn" onClick={confirmLogout}>Logout</button>
+        </div>
+      </dialog>
     </div>
   );
 }

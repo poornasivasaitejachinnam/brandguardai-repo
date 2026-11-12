@@ -52,13 +52,13 @@ export default function AnalyticsPage() {
           <h3>Generate report</h3>
           <div className="form-row">
             <div className="field"><label>Organization</label><select value={organizationId} onChange={(e) => setOrganizationId(e.target.value)}><option value="">Select organization</option>{organizations.map((org) => <option value={org.organization_id} key={org.organization_id}>{org.organization_name}</option>)}</select></div>
-            <div className="field" style={{ justifyContent: 'end', display: 'flex', alignItems: 'end' }}><button className="primary-btn" disabled={!organizationId} onClick={generate}>Generate report</button></div>
+            <div className="field" style={{ justifyContent: 'end', display: 'flex', alignItems: 'end' }}><button className="primary-btn btn-wrapper btn" disabled={!organizationId} onClick={generate}>Generate report</button></div>
           </div>
         </div>
         <div className="table-card" style={{ marginTop: 20 }}>
           <h3>Saved reports</h3>
           {reports.length ? <table className="table"><thead><tr><th>Report</th><th>Generated</th><th>Submissions</th><th>Average score</th><th /></tr></thead><tbody>
-            {reports.map((report) => <tr key={report.report_id}><td>{report.report_title}</td><td>{new Date(report.generated_at).toLocaleString()}</td><td>{report.total_submissions}</td><td>{report.average_compliance_score ?? '—'}</td><td><a className="secondary-btn" href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/reports/${report.report_id}/export.csv`} onClick={(event) => { event.preventDefault(); api.get(`/reports/${report.report_id}/export.csv`, { responseType: 'blob' }).then(({ data }) => { const url = URL.createObjectURL(data); const link = document.createElement('a'); link.href = url; link.download = `brandguard-report-${report.report_id}.csv`; link.click(); URL.revokeObjectURL(url); }).catch((err) => setError(err.response?.data?.message || 'Report export failed.')); }}>Download CSV</a></td></tr>)}
+            {reports.map((report) => <tr key={report.report_id}><td>{report.report_title}</td><td>{new Date(report.generated_at).toLocaleString()}</td><td>{report.total_submissions}</td><td>{report.average_compliance_score ?? '—'}</td><td><a className="secondary-btn btn-wrapper btn" href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/reports/${report.report_id}/export.csv`} onClick={(event) => { event.preventDefault(); api.get(`/reports/${report.report_id}/export.csv`, { responseType: 'blob' }).then(({ data }) => { const url = URL.createObjectURL(data); const link = document.createElement('a'); link.href = url; link.download = `brandguard-report-${report.report_id}.csv`; link.click(); URL.revokeObjectURL(url); }).catch((err) => setError(err.response?.data?.message || 'Report export failed.')); }}>Download CSV</a></td></tr>)}
           </tbody></table> : <p className="muted">No reports generated.</p>}
         </div>
       </>}

@@ -76,20 +76,20 @@ export default function ReviewsPage() {
               <td>{item.title}<br /><small>#{item.submission_id}</small></td>
               <td>{item.brand_name}</td><td>{item.creator_name}</td>
               <td>{item.status.replaceAll('_', ' ')}</td>
-              <td><button className="secondary-btn" onClick={() => viewAnalysis(item.submission_id)}>View analysis</button></td>
+              <td><button className="secondary-btn btn-wrapper btn" onClick={() => viewAnalysis(item.submission_id)}>View analysis</button></td>
               <td>
                 {isAdmin ? (
                   <div className="inline-controls">
                     <select aria-label="Reviewer" value={reviewerId} onChange={(e) => setReviewerId(e.target.value)}><option value="">Select reviewer</option>{reviewers.map((reviewer) => <option value={reviewer.user_id} key={reviewer.user_id}>{reviewer.full_name}</option>)}</select>
-                    <button className="secondary-btn" disabled={!reviewerId} onClick={() => assign(item.submission_id)}>Assign</button>
+                    <button className="secondary-btn btn-wrapper btn" disabled={!reviewerId} onClick={() => assign(item.submission_id)}>Assign</button>
                   </div>
                 ) : (
                   <>
                     <input className="comment-input" placeholder="Optional reviewer comment" value={comments[item.submission_id] || ''} onChange={(e) => setComments({ ...comments, [item.submission_id]: e.target.value })} />
                     <div className="button-row" style={{ marginTop: 6 }}>
-                      <button className="secondary-btn" onClick={() => decide(item.submission_id, 'approve')}>Approve</button>
-                      <button className="ghost-btn" onClick={() => decide(item.submission_id, 'reject')}>Reject</button>
-                      <button className="ghost-btn" onClick={() => decide(item.submission_id, 'changes-requested')}>Request changes</button>
+                      <button className="secondary-btn btn-wrapper btn" onClick={() => decide(item.submission_id, 'approve')}>Approve</button>
+                      <button className="ghost-btn btn-wrapper btn" onClick={() => decide(item.submission_id, 'reject')}>Reject</button>
+                      <button className="ghost-btn btn-wrapper btn" onClick={() => decide(item.submission_id, 'changes-requested')}>Request changes</button>
                     </div>
                   </>
                 )}
@@ -99,7 +99,7 @@ export default function ReviewsPage() {
         </table></div> : <div className="empty-state"><strong>Queue is clear</strong><p className="muted">No submissions are waiting for review.</p></div>}
       </div>
       {detail && <div className="panel-card detail-panel">
-        <div className="toolbar"><h3>{detail.submission.title}</h3><button className="ghost-btn" onClick={() => setDetail(null)}>Close</button></div>
+        <div className="toolbar"><h3>{detail.submission.title}</h3><button className="ghost-btn btn-wrapper btn" onClick={() => setDetail(null)}>Close</button></div>
         <p><strong>Brand:</strong> {detail.submission.brand_name} · <strong>Status:</strong> {detail.submission.status.replaceAll('_', ' ')}</p>
         <pre className="content-preview">{detail.submission.content_text}</pre>
         {detail.analyses?.[0] && <p><strong>Compliance score:</strong> {detail.analyses[0].overall_score}% — {detail.analyses[0].compliance_status.replaceAll('_', ' ')}</p>}

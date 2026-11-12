@@ -44,7 +44,7 @@ export default function LoginPage() {
             </div>
           </div>
           {error && <div className="status rejected">{error}</div>}
-          <button className="primary-btn" type="submit">Login</button>
+          <button className="primary-btn btn-wrapper btn" type="submit">Login</button>
         </form>
         <div className="auth-switch">
           Need an account? <Link to="/register">Create one</Link>

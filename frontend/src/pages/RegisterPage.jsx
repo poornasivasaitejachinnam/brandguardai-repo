@@ -18,11 +18,20 @@ export default function RegisterPage() {
     event.preventDefault();
     setError('');
 
+    if (form.password.length < 10) {
+      setError('Password must be at least 10 characters.');
+      return;
+    }
+
     try {
       await register(form);
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed.');
+      setError(err.response?.data?.message || (
+        err.request
+          ? 'Could not connect to the registration service. Check the connection and try again.'
+          : err.message || 'Registration failed.'
+      ));
     }
   };
 
@@ -43,13 +52,15 @@ export default function RegisterPage() {
           <div className="field">
             <label>Password</label>
             <div className="password-wrap">
-              <input id="register-password" type={showPassword ? 'text' : 'password'} name="password" value={form.password} onChange={handleChange} minLength="10" required />
+              <input id="register-password" type={showPassword ? 'text' : 'password'} name="password" value={form.password} onChange={handleChange} onInvalid={(event) => {
+                if (event.currentTarget.validity.tooShort) setError('Password must be at least 10 characters.');
+              }} minLength="10" required />
               <button className="password-toggle monkey-toggle" type="button" aria-controls="register-password" aria-label={showPassword ? 'Hide password' : 'Show password'} onClick={() => setShowPassword((value) => !value)}><span aria-hidden="true">{showPassword ? '🐵' : '🙈'}</span></button>
             </div>
             <small className="muted">Public registration creates a content creator account. Administrators assign roles.</small>
           </div>
           {error && <div className="status rejected">{error}</div>}
-          <button className="primary-btn" type="submit">Register</button>
+          <button className="primary-btn btn-wrapper btn" type="submit">Register</button>
         </form>
         <div className="auth-switch">
           Already have an account? <Link to="/login">Login</Link>

@@ -54,7 +54,7 @@ export default function DashboardPage() {
       </div>
 
       {loading && <div className="panel-card loading-card">Loading dashboard data…</div>}
-      {error && <div className="panel-card error-state">{error} <button className="secondary-btn" onClick={load}>Retry</button></div>}
+      {error && <div className="panel-card error-state">{error} <button className="secondary-btn btn-wrapper btn" onClick={load}>Retry</button></div>}
       {!loading && dashboard && (
         <>
           <div className="card-grid">

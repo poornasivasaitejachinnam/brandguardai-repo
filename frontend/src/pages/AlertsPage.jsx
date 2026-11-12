@@ -40,14 +40,14 @@ export default function AlertsPage() {
           <span className="eyebrow">Signals</span>
           <h1 className="section-title">Notifications</h1>
         </div>
-        <button className="secondary-btn" onClick={markAllRead}>Mark all read</button>
+        <button className="secondary-btn btn-wrapper btn" onClick={markAllRead}>Mark all read</button>
       </div>
       {error && <div className="notice error-state">{error}</div>}
       <div className="notification-list">
         {notifications.length ? notifications.map((item) => (
           <article className={`notification-item ${item.is_read ? '' : 'unread'}`} key={item.notification_id}>
             <div><strong>{item.title}</strong><p>{item.message}</p><small>{new Date(item.created_at).toLocaleString()} · {item.notification_type}</small></div>
-            {!item.is_read && <button className="ghost-btn" onClick={() => markRead(item.notification_id)}>Mark read</button>}
+            {!item.is_read && <button className="ghost-btn btn-wrapper btn" onClick={() => markRead(item.notification_id)}>Mark read</button>}
           </article>
         )) : <div className="panel-card muted">No notifications.</div>}
       </div>

@@ -15,40 +15,72 @@ export default function ContentPage() {
   const [resubmitText, setResubmitText] = useState('');
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadingBrands, setLoadingBrands] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [brandsError, setBrandsError] = useState('');
   const [message, setMessage] = useState('');
 
   const load = async () => {
     setLoading(true);
+    setLoadingBrands(true);
     setError('');
-    try {
-      const [submissionResponse, brandResponse, categoryResponse] = await Promise.all([
-        api.get('/content'),
-        api.get('/brands'),
-        api.get('/content/categories'),
-      ]);
-      setSubmissions(submissionResponse.data.submissions);
-      setBrands(brandResponse.data.brands);
-      setCategories(categoryResponse.data.categories);
-      if (brandResponse.data.brands[0]) {
-        setForm((current) => ({ ...current, brand_id: current.brand_id || String(brandResponse.data.brands[0].brand_id) }));
-      }
-    } catch (err) {
-      setError(err.response?.data?.message || 'Submissions could not be loaded.');
-    } finally {
-      setLoading(false);
+    setBrandsError('');
+
+    const loadBrands = async () => {
+      const { data } = await api.get('/brands');
+      if (!Array.isArray(data.brands)) throw new Error('The brand service returned an unexpected response.');
+      return data.brands;
+    };
+    const [submissionResult, brandResult, categoryResult] = await Promise.allSettled([
+      api.get('/content'),
+      loadBrands(),
+      api.get('/content/categories'),
+    ]);
+
+    if (submissionResult.status === 'fulfilled') {
+      setSubmissions(submissionResult.value.data.submissions);
+    } else {
+      setError(submissionResult.reason.response?.data?.message || 'Submissions could not be loaded.');
     }
+
+    if (brandResult.status === 'fulfilled') {
+      const availableBrands = brandResult.value;
+      setBrands(availableBrands);
+      setForm((current) => ({
+        ...current,
+        brand_id: availableBrands.some((brand) => String(brand.brand_id) === current.brand_id)
+          ? current.brand_id
+          : availableBrands[0] ? String(availableBrands[0].brand_id) : '',
+      }));
+    } else {
+      setBrands([]);
+      setForm((current) => ({ ...current, brand_id: '' }));
+      setBrandsError(brandResult.reason.response?.data?.message || brandResult.reason.message || 'Brands could not be loaded.');
+    }
+
+    if (categoryResult.status === 'fulfilled') {
+      setCategories(categoryResult.value.data.categories);
+    } else {
+      setError((current) => current || categoryResult.reason.response?.data?.message || 'Content categories could not be loaded.');
+    }
+
+    setLoading(false);
+    setLoadingBrands(false);
   };
   useEffect(() => { load(); }, []);
 
   const updateForm = (event) => setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
   const submit = async (event) => {
     event.preventDefault();
-    setSaving(true);
     setError('');
     setMessage('');
     setAnalysis(null);
+    if (!brands.some((brand) => String(brand.brand_id) === form.brand_id)) {
+      setBrandsError('Select an available brand before submitting content.');
+      return;
+    }
+    setSaving(true);
     try {
       const body = new FormData();
       Object.entries(form).forEach(([key, value]) => { if (value) body.append(key, value); });
@@ -121,7 +153,19 @@ export default function ContentPage() {
           <div className="section-heading"><span className="eyebrow">New review</span><h3>Submit content for analysis</h3><p className="muted">Add campaign details and check your draft against the selected brand guidelines.</p></div>
           <form className="form-grid" onSubmit={submit}>
             <div className="form-row">
-              <div className="field"><label>Brand</label><select name="brand_id" value={form.brand_id} onChange={updateForm} required><option value="">Select brand</option>{brands.map((brand) => <option value={brand.brand_id} key={brand.brand_id}>{brand.brand_name}</option>)}</select></div>
+              <div className="field">
+                <label htmlFor="content-brand-select">Brand</label>
+                <select id="content-brand-select" name="brand_id" value={form.brand_id} onChange={(event) => {
+                  updateForm(event);
+                  setBrandsError('');
+                }} disabled={loadingBrands || !brands.length} required>
+                  <option value="">{loadingBrands ? 'Loading brands…' : brands.length ? 'Select brand' : 'No brands available'}</option>
+                  {brands.map((brand) => <option value={brand.brand_id} key={brand.brand_id}>{brand.brand_name}</option>)}
+                </select>
+                {loadingBrands && <small className="muted" role="status">Loading brands…</small>}
+                {brandsError && <small className="error-state" role="alert">{brandsError}</small>}
+                {!loadingBrands && !brands.length && !brandsError && <small className="muted">No brands are available for this account.</small>}
+              </div>
               <div className="field"><label>Category</label><select name="category_id" value={form.category_id} onChange={updateForm}><option value="">No category</option>{categories.map((category) => <option value={category.category_id} key={category.category_id}>{category.category_name}</option>)}</select></div>
               <div className="field"><label>Title</label><input name="title" value={form.title} onChange={updateForm} maxLength="200" required /></div>
             </div>
@@ -132,7 +176,7 @@ export default function ContentPage() {
             </div>
             <div className="field"><label>Text to analyze</label><textarea name="content_text" rows="5" value={form.content_text} onChange={updateForm} required /></div>
             <div className="field"><label>Attachment (optional, max 10 MB)</label><input type="file" accept=".png,.jpg,.jpeg,.webp,.pdf,.doc,.docx,.txt" onChange={(event) => setFile(event.target.files?.[0] || null)} /></div>
-            <button className="primary-btn" disabled={saving || !brands.length}>{saving ? 'Analyzing…' : 'Submit and analyze'}</button>
+            <button className="primary-btn btn-wrapper btn" disabled={saving || loadingBrands || !brands.length}>{saving ? 'Analyzing…' : 'Submit and analyze'}</button>
           </form>
         </div>
       )}
@@ -155,7 +199,7 @@ export default function ContentPage() {
                 <td><span className={`status ${item.status === 'approved' ? 'approved' : item.status === 'rejected' ? 'rejected' : 'pending'}`}>{item.status?.replaceAll('_', ' ')}</span></td>
                 <td>{item.overall_score == null ? '—' : `${Number(item.overall_score).toFixed(0)}%`}</td>
                 <td>{item.submitted_at ? new Date(item.submitted_at).toLocaleDateString() : '—'}</td>
-                <td><button className="secondary-btn" onClick={() => viewSubmission(item)}>Details</button></td>
+                <td><button className="secondary-btn btn-wrapper btn" onClick={() => viewSubmission(item)}>Details</button></td>
               </tr>
             ))}</tbody>
           </table></div>
@@ -163,12 +207,12 @@ export default function ContentPage() {
       </div>
       {selected && (
         <div className="panel-card detail-panel">
-          <div className="toolbar"><h3>{selected.submission.title}</h3><button className="ghost-btn" onClick={() => setSelected(null)}>Close</button></div>
+          <div className="toolbar"><h3>{selected.submission.title}</h3><button className="ghost-btn btn-wrapper btn" onClick={() => setSelected(null)}>Close</button></div>
           <p><strong>Status:</strong> {selected.submission.status.replaceAll('_', ' ')} · <strong>Brand:</strong> {selected.submission.brand_name}</p>
           {isCreator && ['rejected', 'changes_requested'].includes(selected.submission.status) ? (
-            <div className="field"><label>Update content for resubmission</label><textarea rows="6" value={resubmitText} onChange={(event) => setResubmitText(event.target.value)} /><button className="primary-btn" style={{ marginTop: 10 }} onClick={resubmit}>Resubmit for analysis</button></div>
+            <div className="field"><label>Update content for resubmission</label><textarea rows="6" value={resubmitText} onChange={(event) => setResubmitText(event.target.value)} /><button className="primary-btn btn-wrapper btn" style={{ marginTop: 10 }} onClick={resubmit}>Resubmit for analysis</button></div>
           ) : <pre className="content-preview">{selected.submission.content_text}</pre>}
-          {isCreator && ['submitted', 'analyzing'].includes(selected.submission.status) && selected.analyses?.[0]?.compliance_status === 'failed' && <button className="primary-btn" onClick={retryAnalysis}>Retry analysis</button>}
+          {isCreator && ['submitted', 'analyzing'].includes(selected.submission.status) && selected.analyses?.[0]?.compliance_status === 'failed' && <button className="primary-btn btn-wrapper btn" onClick={retryAnalysis}>Retry analysis</button>}
           {selected.analyses?.[0] && <p><strong>Latest compliance:</strong> {selected.analyses[0].overall_score}% — {selected.analyses[0].compliance_status.replaceAll('_', ' ')}</p>}
           {selected.issues?.length ? <ul>{selected.issues.map((issue) => <li key={issue.detected_issue_id}>{issue.issue_description}<br /><span className="muted">{issue.suggested_text}</span></li>)}</ul> : <p className="muted">No detected issues.</p>}
           {selected.files?.map((item) => <p key={item.file_id}><a href={`http://localhost:5000${item.file_path}`} target="_blank" rel="noreferrer">{item.original_name}</a> · {item.scan_status}</p>)}

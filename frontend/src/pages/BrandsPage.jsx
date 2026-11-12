@@ -95,7 +95,7 @@ export default function BrandsPage() {
               <div className="field"><label>Status</label><select name="status" value={form.status || 'active'} onChange={change}><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
             </div>
             <div className="field"><label>Description</label><textarea name="brand_description" rows="2" value={form.brand_description} onChange={change} /></div>
-            <div className="button-row"><button className="primary-btn" disabled={saving}>{saving ? 'Saving…' : editing ? 'Save changes' : 'Create brand'}</button>{editing && <button className="ghost-btn" type="button" onClick={() => { setEditing(null); setForm(initialForm); }}>Cancel</button>}</div>
+            <div className="button-row"><button className="primary-btn btn-wrapper btn" disabled={saving}>{saving ? 'Saving…' : editing ? 'Save changes' : 'Create brand'}</button>{editing && <button className="ghost-btn btn-wrapper btn" type="button" onClick={() => { setEditing(null); setForm(initialForm); }}>Cancel</button>}</div>
           </form>
         </div>
       )}
@@ -107,7 +107,7 @@ export default function BrandsPage() {
               <tr key={brand.brand_id}>
                 <td>{brand.brand_name}</td><td>{brand.organization_name}</td><td>{brand.industry || '—'}</td>
                 <td><span className={`status ${brand.status === 'active' ? 'approved' : 'rejected'}`}>{brand.status}</span></td>
-                {isAdmin && <td><button className="secondary-btn" onClick={() => startEdit(brand)}>Edit</button></td>}
+                {isAdmin && <td><button className="secondary-btn btn-wrapper btn" onClick={() => startEdit(brand)}>Edit</button></td>}
               </tr>
             ))}</tbody>
           </table>

@@ -61,7 +61,7 @@ export default function OrganizationsPage() {
             <div className="field"><label>Website</label><input name="website" type="url" value={form.website} onChange={updateForm} /></div>
             <div className="field"><label>Contact email</label><input name="contact_email" type="email" value={form.contact_email} onChange={updateForm} /></div>
           </div>
-          <div className="button-row"><button className="primary-btn">{editing ? 'Save changes' : 'Create organization'}</button>{editing && <button className="ghost-btn" type="button" onClick={() => { setEditing(null); setForm(empty); }}>Cancel</button>}</div>
+          <div className="button-row"><button className="primary-btn btn-wrapper btn">{editing ? 'Save changes' : 'Create organization'}</button>{editing && <button className="ghost-btn btn-wrapper btn" type="button" onClick={() => { setEditing(null); setForm(empty); }}>Cancel</button>}</div>
         </form>
       </div>
       <div className="table-card">
@@ -72,7 +72,7 @@ export default function OrganizationsPage() {
               <tr key={org.organization_id}>
                 <td>{org.organization_name}</td><td>{org.industry || '—'}</td><td>{org.website || '—'}</td>
                 <td>{org.status}</td>
-                <td><button className="secondary-btn" onClick={() => { setEditing(org.organization_id); setForm({ ...empty, ...org }); }}>Edit</button></td>
+                <td><button className="secondary-btn btn-wrapper btn" onClick={() => { setEditing(org.organization_id); setForm({ ...empty, ...org }); }}>Edit</button></td>
               </tr>
             ))}</tbody>
           </table>

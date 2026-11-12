@@ -64,7 +64,7 @@ export default function SettingsPage() {
             <label htmlFor="email">Email</label>
             <input id="email" type="email" value={profile.email} onChange={(event) => setProfile({ ...profile, email: event.target.value })} required maxLength={150} />
           </div>
-          <button className="primary-btn" type="submit">Save profile</button>
+          <button className="primary-btn btn-wrapper btn" type="submit">Save profile</button>
         </form>
         <form className="panel-card form-grid" onSubmit={changePassword}>
           <div className="section-heading"><span className="eyebrow">Security</span><h2>Change password</h2><p className="muted">Choose a unique password with at least 10 characters.</p></div>
@@ -82,7 +82,7 @@ export default function SettingsPage() {
               <button className="password-toggle monkey-toggle" type="button" aria-controls="new-password" aria-label={visiblePasswords.new ? 'Hide new password' : 'Show new password'} onClick={() => setVisiblePasswords((current) => ({ ...current, new: !current.new }))}><span aria-hidden="true">{visiblePasswords.new ? '🐵' : '🙈'}</span></button>
             </div>
           </div>
-          <button className="primary-btn" type="submit">Change password</button>
+          <button className="primary-btn btn-wrapper btn" type="submit">Change password</button>
         </form>
       </div>
     </div>
