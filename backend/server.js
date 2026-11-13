@@ -59,7 +59,8 @@ app.use('/api/guidelines', require('./routes/guidelines'));
 app.use('/api/content', require('./routes/content'));
 app.use('/api/dashboard', require('./routes/dashboard'));
 app.use('/api/reviews', require('./routes/reviews'));
-app.use('/api', require('./routes/system'));
+app.use('/api', require('./routes/system'));;
+
 
 
 // Health endpoints
