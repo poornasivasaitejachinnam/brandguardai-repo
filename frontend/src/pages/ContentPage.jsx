@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import api from '../services/api';
+import api, { getBackendBaseUrl } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
 const initialForm = { brand_id: '', title: '', content_text: '', category_id: '', campaign_name: '', target_audience: '', platform: '' };
@@ -215,7 +215,7 @@ export default function ContentPage() {
           {isCreator && ['submitted', 'analyzing'].includes(selected.submission.status) && selected.analyses?.[0]?.compliance_status === 'failed' && <button className="primary-btn btn-wrapper btn" onClick={retryAnalysis}>Retry analysis</button>}
           {selected.analyses?.[0] && <p><strong>Latest compliance:</strong> {selected.analyses[0].overall_score}% — {selected.analyses[0].compliance_status.replaceAll('_', ' ')}</p>}
           {selected.issues?.length ? <ul>{selected.issues.map((issue) => <li key={issue.detected_issue_id}>{issue.issue_description}<br /><span className="muted">{issue.suggested_text}</span></li>)}</ul> : <p className="muted">No detected issues.</p>}
-          {selected.files?.map((item) => <p key={item.file_id}><a href={`http://localhost:5000${item.file_path}`} target="_blank" rel="noreferrer">{item.original_name}</a> · {item.scan_status}</p>)}
+          {selected.files?.map((item) => <p key={item.file_id}><a href={`${getBackendBaseUrl()}${item.file_path}`} target="_blank" rel="noreferrer">{item.original_name}</a> · {item.scan_status}</p>)}
         </div>
       )}
     </div>

@@ -1,8 +1,9 @@
+const path = require('path');
 require('dotenv').config();
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 const crypto = require('crypto');
 const fs = require('fs/promises');
 const mysql = require('mysql2/promise');
-const path = require('path');
 
 const baseUrl = 'http://127.0.0.1:5000';
 const testData = { users: [], organizationName: `Temporary ${crypto.randomUUID()}`, brandName: `Temporary ${crypto.randomUUID()}`, guidelineTitle: `Temporary ${crypto.randomUUID()}` };

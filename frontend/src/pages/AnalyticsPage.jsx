@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import api from '../services/api';
+import api, { getApiBaseUrl } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
 export default function AnalyticsPage() {
@@ -58,7 +58,7 @@ export default function AnalyticsPage() {
         <div className="table-card" style={{ marginTop: 20 }}>
           <h3>Saved reports</h3>
           {reports.length ? <table className="table"><thead><tr><th>Report</th><th>Generated</th><th>Submissions</th><th>Average score</th><th /></tr></thead><tbody>
-            {reports.map((report) => <tr key={report.report_id}><td>{report.report_title}</td><td>{new Date(report.generated_at).toLocaleString()}</td><td>{report.total_submissions}</td><td>{report.average_compliance_score ?? '—'}</td><td><a className="secondary-btn btn-wrapper btn" href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/reports/${report.report_id}/export.csv`} onClick={(event) => { event.preventDefault(); api.get(`/reports/${report.report_id}/export.csv`, { responseType: 'blob' }).then(({ data }) => { const url = URL.createObjectURL(data); const link = document.createElement('a'); link.href = url; link.download = `brandguard-report-${report.report_id}.csv`; link.click(); URL.revokeObjectURL(url); }).catch((err) => setError(err.response?.data?.message || 'Report export failed.')); }}>Download CSV</a></td></tr>)}
+            {reports.map((report) => <tr key={report.report_id}><td>{report.report_title}</td><td>{new Date(report.generated_at).toLocaleString()}</td><td>{report.total_submissions}</td><td>{report.average_compliance_score ?? '—'}</td><td><a className="secondary-btn btn-wrapper btn" href={`${getApiBaseUrl()}/reports/${report.report_id}/export.csv`} onClick={(event) => { event.preventDefault(); api.get(`/reports/${report.report_id}/export.csv`, { responseType: 'blob' }).then(({ data }) => { const url = URL.createObjectURL(data); const link = document.createElement('a'); link.href = url; link.download = `brandguard-report-${report.report_id}.csv`; link.click(); URL.revokeObjectURL(url); }).catch((err) => setError(err.response?.data?.message || 'Report export failed.')); }}>Download CSV</a></td></tr>)}
           </tbody></table> : <p className="muted">No reports generated.</p>}
         </div>
       </>}

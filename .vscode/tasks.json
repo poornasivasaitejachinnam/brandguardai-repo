@@ -13,11 +13,10 @@
 		{
 			"label": "BrandGuard Backend",
 			"type": "shell",
-			"command": "C:\\Windows\\System32\\cmd.exe",
-			"args": [
-				"/c",
-				"cd /d C:\\BrandGuardAI\\backend && npm run dev"
-			],
+			"command": "npm run dev",
+			"options": {
+				"cwd": "${workspaceFolder}/backend"
+			},
 			"isBackground": true,
 			"problemMatcher": [],
 			"group": "build"
@@ -25,11 +24,10 @@
 		{
 			"label": "BrandGuard Frontend",
 			"type": "shell",
-			"command": "C:\\Windows\\System32\\cmd.exe",
-			"args": [
-				"/c",
-				"cd /d C:\\BrandGuardAI\\frontend && npm run dev"
-			],
+			"command": "npm run dev",
+			"options": {
+				"cwd": "${workspaceFolder}/frontend"
+			},
 			"isBackground": true,
 			"problemMatcher": [],
 			"group": "build"
@@ -37,11 +35,19 @@
 		{
 			"label": "BrandGuard AI Service",
 			"type": "shell",
-			"command": "C:\\Windows\\System32\\cmd.exe",
-			"args": [
-				"/c",
-				"cd /d C:\\BrandGuardAI\\ai-service && .\\.venv\\Scripts\\activate.bat && uvicorn app.main:app --reload --port 8000"
-			],
+			"command": "uvicorn app.main:app --reload --port 8000",
+			"options": {
+				"cwd": "${workspaceFolder}/ai-service"
+			},
+			"windows": {
+				"command": ".\\.venv\\Scripts\\activate.bat && uvicorn app.main:app --reload --port 8000"
+			},
+			"osx": {
+				"command": "source .venv/bin/activate && uvicorn app.main:app --reload --port 8000"
+			},
+			"linux": {
+				"command": "source .venv/bin/activate && uvicorn app.main:app --reload --port 8000"
+			},
 			"isBackground": true,
 			"problemMatcher": [],
 			"group": "build"
@@ -49,11 +55,10 @@
 		{
 			"label": "BrandGuard Smoke Test",
 			"type": "shell",
-			"command": "C:\\Windows\\System32\\cmd.exe",
-			"args": [
-				"/c",
-				"cd /d C:\\BrandGuardAI\\backend && npm run test:smoke"
-			],
+			"command": "npm run test:smoke",
+			"options": {
+				"cwd": "${workspaceFolder}/backend"
+			},
 			"isBackground": false,
 			"problemMatcher": [],
 			"group": "test"
@@ -61,11 +66,10 @@
 		{
 			"label": "BrandGuard Workflow Test",
 			"type": "shell",
-			"command": "C:\\Windows\\System32\\cmd.exe",
-			"args": [
-				"/c",
-				"cd /d C:\\BrandGuardAI\\backend && npm run test:workflow"
-			],
+			"command": "npm run test:workflow",
+			"options": {
+				"cwd": "${workspaceFolder}/backend"
+			},
 			"isBackground": false,
 			"problemMatcher": [],
 			"group": "test"
@@ -73,11 +77,10 @@
 		{
 			"label": "BrandGuard Frontend Build",
 			"type": "shell",
-			"command": "C:\\Windows\\System32\\cmd.exe",
-			"args": [
-				"/c",
-				"cd /d C:\\BrandGuardAI\\frontend && npm run build"
-			],
+			"command": "npm run build",
+			"options": {
+				"cwd": "${workspaceFolder}/frontend"
+			},
 			"isBackground": false,
 			"problemMatcher": [],
 			"group": "build"
@@ -85,11 +88,10 @@
 		{
 			"label": "BrandGuard Backend Smoke Test",
 			"type": "shell",
-			"command": "C:\\Windows\\System32\\cmd.exe",
-			"args": [
-				"/c",
-				"cd /d C:\\BrandGuardAI\\backend && npm run test:smoke"
-			],
+			"command": "npm run test:smoke",
+			"options": {
+				"cwd": "${workspaceFolder}/backend"
+			},
 			"isBackground": false,
 			"problemMatcher": [],
 			"group": "test"
@@ -97,11 +99,10 @@
 		{
 			"label": "BrandGuard Frontend Dev Server",
 			"type": "shell",
-			"command": "C:\\Windows\\System32\\cmd.exe",
-			"args": [
-				"/c",
-				"cd /d C:\\BrandGuardAI\\frontend && npm run dev"
-			],
+			"command": "npm run dev",
+			"options": {
+				"cwd": "${workspaceFolder}/frontend"
+			},
 			"isBackground": true,
 			"problemMatcher": [],
 			"group": "build"
@@ -109,11 +110,10 @@
 		{
 			"label": "BrandGuard Backend Server",
 			"type": "shell",
-			"command": "C:\\Windows\\System32\\cmd.exe",
-			"args": [
-				"/c",
-				"cd /d C:\\BrandGuardAI\\backend && npm start"
-			],
+			"command": "npm start",
+			"options": {
+				"cwd": "${workspaceFolder}/backend"
+			},
 			"isBackground": true,
 			"problemMatcher": [],
 			"group": "build"
@@ -121,11 +121,10 @@
 		{
 			"label": "BrandGuard UI and backend validation",
 			"type": "shell",
-			"command": "C:\\Windows\\System32\\cmd.exe",
-			"args": [
-				"/c",
-				"cd /d C:\\BrandGuardAI\\frontend && npm run build && cd /d C:\\BrandGuardAI\\backend && npm run test:smoke"
-			],
+			"command": "npm run build && npm --prefix ../backend run test:smoke",
+			"options": {
+				"cwd": "${workspaceFolder}/frontend"
+			},
 			"isBackground": false,
 			"problemMatcher": [],
 			"group": "test"
@@ -133,11 +132,10 @@
 		{
 			"label": "BrandGuard final UI polish validation",
 			"type": "shell",
-			"command": "C:\\Windows\\System32\\cmd.exe",
-			"args": [
-				"/c",
-				"cd /d C:\\BrandGuardAI\\frontend && npm run build && cd /d C:\\BrandGuardAI\\backend && npm run test:smoke"
-			],
+			"command": "npm run build && npm --prefix ../backend run test:smoke",
+			"options": {
+				"cwd": "${workspaceFolder}/frontend"
+			},
 			"isBackground": false,
 			"problemMatcher": [],
 			"group": "test"
@@ -145,11 +143,10 @@
 		{
 			"label": "BrandGuard UI Final Build",
 			"type": "shell",
-			"command": "C:\\Windows\\System32\\cmd.exe",
-			"args": [
-				"/c",
-				"cd /d C:\\BrandGuardAI\\frontend && npm run build"
-			],
+			"command": "npm run build",
+			"options": {
+				"cwd": "${workspaceFolder}/frontend"
+			},
 			"isBackground": false,
 			"problemMatcher": [],
 			"group": "build"
@@ -157,11 +154,10 @@
 		{
 			"label": "BrandGuard Password Toggle Build",
 			"type": "shell",
-			"command": "C:\\Windows\\System32\\cmd.exe",
-			"args": [
-				"/c",
-				"cd /d C:\\BrandGuardAI\\frontend && npm run build"
-			],
+			"command": "npm run build",
+			"options": {
+				"cwd": "${workspaceFolder}/frontend"
+			},
 			"isBackground": false,
 			"problemMatcher": [],
 			"group": "build"
@@ -169,11 +165,10 @@
 		{
 			"label": "BrandGuard Monkey Toggle Build",
 			"type": "shell",
-			"command": "C:\\Windows\\System32\\cmd.exe",
-			"args": [
-				"/c",
-				"cd /d C:\\BrandGuardAI\\frontend && npm run build"
-			],
+			"command": "npm run build",
+			"options": {
+				"cwd": "${workspaceFolder}/frontend"
+			},
 			"isBackground": false,
 			"problemMatcher": [],
 			"group": "build"
