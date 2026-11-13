@@ -8,6 +8,12 @@ const { health, databaseHealth } = require('./controllers/healthController');
 
 dotenv.config();
 dotenv.config({ path: path.join(__dirname, '.env') });
+// Ensure a JWT secret is always present (use a generated one in dev if missing)
+if (!process.env.JWT_SECRET) {
+  const crypto = require('crypto');
+  process.env.JWT_SECRET = crypto.randomBytes(48).toString('base64');
+  console.warn('JWT_SECRET was not defined; generated a temporary secret for this session.');
+}
 
 const app = express();
 const PORT = process.env.PORT || 5000;
