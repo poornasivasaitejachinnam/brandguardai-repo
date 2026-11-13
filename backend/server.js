@@ -48,7 +48,7 @@ app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(uploadDir));
 // Serve frontend production build (SPA)
-const frontendDist = path.join(__dirname, '..', 'frontend', 'dist');
+const frontendDist = path.resolve(__dirname, '../../frontend/dist');
 app.use(express.static(frontendDist));
 
 // API routes (must be defined BEFORE the catch‑all)
